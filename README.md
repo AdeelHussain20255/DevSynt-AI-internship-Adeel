@@ -54,18 +54,22 @@ To allow external webhooks to hit the local n8n instance seamlessly without chan
 ```bash
 ngrok http 5678 --url=overact-porthole-vitally.ngrok-free.dev
 ```
+![ngrok Reverse Proxy Tunnel Active](assets/ngrok.png)
 
 #### 3. Account Initialization & Verification
 * Navigated to `https://overact-porthole-vitally.ngrok-free.dev` in the browser to confirm public routing.
 * Completed the primary owner account registration (email, profile setup, and security credentials).
 * Verified full access and execution functionality on the n8n visual workflow canvas.
 
+![n8n Editor Access via Public Domain](assets/n8n.png)
 ---
 
 ## 📁 Repository Structure
 
 ```text
 .
+├── assets/      # Screenshots & visual proof of work
+│   ├── n8n.png
+│   └── ngrok.png
 ├── README.md
 └── tasks/       # Upcoming automation workflows & export files
-```
