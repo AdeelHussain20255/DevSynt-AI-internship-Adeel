@@ -1,0 +1,12 @@
+{
+  "business_name": "Apex Dental Care",
+  "services": [
+    "Teeth Cleaning",
+    "Dental Checkup",
+    "Teeth Whitening"
+  ],
+  "calendar_id": "apex_dental_cal_01",
+  "handoff_contact": "+1234567890",
+  "reminder_lead_time_hours": 24,
+  "default_language": "en"
+}

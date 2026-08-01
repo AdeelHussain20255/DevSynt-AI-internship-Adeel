@@ -1,0 +1,25 @@
+graph TD
+    Start([Incoming WhatsApp Message]) --> State0{State 0: Language Detection}
+    
+    State0 -->|Urdu Script Detected| State1UR[State 1: Urdu Greeting & Intent]
+    State0 -->|Default / English| State1EN[State 1: English Greeting & Intent]
+    
+    State1EN -->|Option 1: Book| State2EN[State 2: Service Selection]
+    State1EN -->|Option 2: Question| HumanHandoff[Human Handoff / Specialist]
+    
+    State1UR -->|Option 1: Book| State2UR[State 2: Urdu Service Selection]
+    State1UR -->|Option 2: Question| HumanHandoff
+    
+    State2EN --> State3EN[State 3: Timing Preference]
+    State2UR --> State3UR[State 3: Urdu Timing Preference]
+    
+    State3EN --> State4EN[State 4: Offer Available Slots A/B]
+    State3UR --> State4UR[State 4: Urdu Offer Available Slots A/B]
+    
+    State4EN --> State5EN[State 5: Booking Confirmation & Summary]
+    State4UR --> State5UR[State 5: Urdu Booking Confirmation & Summary]
+
+    %% Inactivity Nudge Triggers
+    State1EN -.->|+1h Inactivity| Nudge1[Nudge 1: Friendly Check-in]
+    State2EN -.->|+24h Inactivity| Nudge2[Nudge 2: Hold Slot Template]
+    Nudge2 -.->|+72h Inactivity| Nudge3[Nudge 3: Slot Released Notice]

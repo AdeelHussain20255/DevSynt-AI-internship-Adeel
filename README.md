@@ -69,6 +69,8 @@ ngrok http 5678 --url=overact-porthole-vitally.ngrok-free.dev
 
 ---
 
+---
+
 ## 🚀 Task 2: WhatsApp Lead-to-Booking System (Phase 1)
 
 ### Overview
@@ -99,12 +101,20 @@ Designed and deployed Phase 1 of an automated **WhatsApp Lead-to-Booking pipelin
 * Set up a dedicated POST webhook listener in n8n to ingest real-time JSON payloads containing inbound sender phone numbers (`wa_id`) and text content.
 
 #### 3. Outbound Graph API Response Node
-* Configured an **HTTP Request** node targeting Meta's messaging endpoint:
+* Configured an **HTTP Request** node targeting Meta's messaging endpoint:  
   `POST https://graph.facebook.com/v20.0/{PHONE_NUMBER_ID}/messages`
 * Authenticated calls using Bearer Tokens and structured JSON payloads to deliver instant dynamic auto-replies back to WhatsApp users.
 
 #### 4. Modular Configuration
 * Externalized core bot settings, business info, system prompts, and state values into a modular `config.json` file for scalable future expansion.
+
+---
+
+### 📁 Deliverables & Workflow Files
+* **Workflow Export:** [`workflow.json`](./tasks/task2-whatsapp-phase1/workflow.json)
+* **Configuration File:** [`config.json`](./tasks/task2-whatsapp-phase1/config.json)
+* **Flowchart Diagram:** [`flow.mmd`](./tasks/task2-whatsapp-phase1/flow.mmd)
+* **Message Templates:** [`messages.md`](./tasks/task2-whatsapp-phase1/messages.md)
 
 ---
 
@@ -126,13 +136,25 @@ Designed and deployed Phase 1 of an automated **WhatsApp Lead-to-Booking pipelin
 *Live WhatsApp test conversation confirming incoming user prompts and automated n8n responses.*
 ![WhatsApp Chat Proof](assets/whatsapp-reply-test.jpeg)
 
+---
 
 ## 📁 Repository Structure
 
 ```text
 .
-├── assets/      # Screenshots & visual proof of work
+├── assets/           # Visual proofs & screenshots for Task 1 & Task 2
+│   ├── .gitkeep
+│   ├── n8n-workflow-canvas.jpeg
 │   ├── n8n.png
-│   └── ngrok.png
-├── README.md
-└── tasks/       # Upcoming automation workflows & export files
+│   ├── ngrok-tunnel-status.jpeg
+│   ├── ngrok.png
+│   ├── webhook-test-screenshot.jpeg
+│   └── whatsapp-reply-test.jpeg
+├── tasks/            # Task deliverables & workflow exports
+│   └── task2-whatsapp-phase1/
+│       ├── config.json
+│       ├── flow.mmd
+│       ├── messages.md
+│       ├── workflow.json
+│       └── README.md
+└── README.md         # Main internship documentation & progress log

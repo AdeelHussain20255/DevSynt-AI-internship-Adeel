@@ -1,0 +1,158 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "whatsapp",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a1c3624a-3a98-444b-9965-3f81e66f07a8",
+      "name": "Webhook",
+      "webhookId": "1c98c541-0c62-4446-808f-45ba9866e1b8"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query['hub.challenge'] }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/plain"
+              },
+              {}
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        208,
+        0
+      ],
+      "id": "c35f3e8c-709d-4545-b439-48513db8e550",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "58e91ef4-6b38-41c7-872e-046cbe1a865d",
+      "name": "Webhook1",
+      "webhookId": "83e0f1ed-efcd-4cee-8184-51e03fc337e8"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "OK",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        624,
+        0
+      ],
+      "id": "d6caf5ab-20f4-43e0-90eb-3f6da6ef84c2",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/1189602977572793/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAATVM5QjXrQBSBufNOXAWRF841mu0zCZBZCjk2RhXHWtd3ZAlTd7EEpWQXdiexcx7G9FZClBPZAjyWmumceMe61GYtGMrb7ACQWnt7nQteVc1I1vZCKilPgvrUE7YXYIqLsZBEqgOpNHqyKMOG8X1UiYjsCpiR4761fBjYPj7JiYoVQcb7DVyVtmTMsefToXRxK34bn75PtlvfLtVZBRZBfTpIUsAJDwNHLnUcUZAU"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"recipient_type\": \"individual\",\n  \"to\": \"={{ $json.body.entry[0].changes[0].value.messages[0].from }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"preview_url\": false,\n    \"body\": \"Hello from n8n! I received your message.\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        640,
+        192
+      ],
+      "id": "44f015f5-fa8e-4fdb-8ad1-49efe9762927",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "219b73db-b138-43cb-9c6a-16baf6b68b6b",
+  "meta": {
+    "instanceId": "8f257f8f42b5e612f8b18f24ed376d430e1b0c1e73fd90c9b6bab71d8bfde604"
+  },
+  "nodeGroups": [],
+  "id": "mwaWPHRC4E5lmq11",
+  "tags": []
+}
