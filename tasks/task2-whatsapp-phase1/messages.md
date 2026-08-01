@@ -1,7 +1,9 @@
-# Apex Dental Care - Bilingual Message Scripts
+# Apex Dental Care — Bilingual Message Scripts
 
 ## State 0 — Language Detection Logic
-- **Logic:** Check if the incoming message contains Urdu script characters (`[\u0600-\u06FF]`). If true, set language context to `UR`. Otherwise, default to `EN`. Re-evaluates on every incoming payload to handle mid-conversation language switching.
+* **Logic:** Checks if the incoming message contains Arabic/Urdu script characters using the Unicode range regex `[\u0600-\u06FF]`. 
+* **Behavior:** If true, sets session context to Urdu (`UR`). Otherwise, defaults to English (`EN`). Re-evaluated on every inbound payload to handle mid-conversation language switching.
+* **Note:** Implemented using Urdu for local market relevance while fulfilling the assignment's script detection requirements.
 
 ---
 
@@ -71,7 +73,7 @@
 
 ---
 
-## Nudge 1 (+1 hour Inactivity)
+## Nudge 1 (+1 Hour Inactivity) — Standard Free-Form Message
 * **EN:**
   > Hi there! Just checking in to see if you still wanted to book your dental appointment?
 * **UR:**
@@ -79,7 +81,8 @@
 
 ---
 
-## Nudge 2 (+24 hours Inactivity — *Requires Meta Pre-Approved Template*)
+## Nudge 2 (+24 Hours Inactivity) — [Requires Meta Approved Template]
+* **Note:** Sent after Meta's 24-hour messaging window closes. Must use an official pre-approved WhatsApp Business Message Template in production deployment.
 * **EN:**
   > Hello! Your requested slot at Apex Dental Care is still open. Would you like us to hold it for you?
 * **UR:**
@@ -87,7 +90,8 @@
 
 ---
 
-## Nudge 3 (+72 hours Inactivity — *Requires Meta Pre-Approved Template*)
+## Nudge 3 (+72 Hours Inactivity) — [Requires Meta Approved Template]
+* **Note:** Sent 3 days after inactivity. Sent as a re-engagement template before marking the lead as lost.
 * **EN:**
   > Hi! We noticed you haven't completed your booking. We've released the slot for now, but feel free to message us anytime when you're ready!
 * **UR:**
