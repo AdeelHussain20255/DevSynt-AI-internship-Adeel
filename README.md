@@ -15,6 +15,8 @@ Welcome to the repository for my **AI Automation Internship** at **DevSynt**. Th
 
 ---
 
+
+
 ## 🚀 Task 1: Local n8n Setup & Public Webhook Exposure
 
 ### Overview
@@ -63,6 +65,67 @@ ngrok http 5678 --url=overact-porthole-vitally.ngrok-free.dev
 
 ![n8n Editor Access via Public Domain](assets/n8n.png)
 ---
+
+
+---
+
+## 🚀 Task 2: WhatsApp Lead-to-Booking System (Phase 1)
+
+### Overview
+Designed and deployed Phase 1 of an automated **WhatsApp Lead-to-Booking pipeline** tailored for **Apex Dental Care**. This phase establishes a live, two-way communication bridge between Meta's WhatsApp Cloud API Sandbox and a local **n8n** automation engine exposed publicly via an **ngrok** tunnel. The system dynamically receives incoming user messages (supporting English and Urdu conversational workflows) and dispatches automated responses back through Meta's Graph API.
+
+---
+
+### ⚙️ System Architecture & Parameters
+
+| Parameter | Configuration |
+| :--- | :--- |
+| **Niche / Business** | Apex Dental Care |
+| **Primary Language** | Urdu / English (Bilingual Support) |
+| **Messaging Platform** | Meta WhatsApp Cloud API (Sandbox Mode) |
+| **Webhook Tunnel** | `https://overact-porthole-vitally.ngrok-free.dev/webhook/whatsapp` |
+| **Automation Engine** | n8n Workflow Automation |
+| **API Version** | Meta Graph API `v20.0` |
+
+---
+
+### 🛠️ Key Implementation Steps
+
+#### 1. Webhook Handshake & Verification (`GET`)
+* Configured an initial `Webhook` and `Respond to Webhook` node pairing in n8n to process Meta’s initial validation request (`hub.challenge`).
+* Verified the webhook token securely against Meta's Developer Console to activate live event subscriptions.
+
+#### 2. Inbound Message Ingestion (`POST`)
+* Set up a dedicated POST webhook listener in n8n to ingest real-time JSON payloads containing inbound sender phone numbers (`wa_id`) and text content.
+
+#### 3. Outbound Graph API Response Node
+* Configured an **HTTP Request** node targeting Meta's messaging endpoint:
+  `POST https://graph.facebook.com/v20.0/{PHONE_NUMBER_ID}/messages`
+* Authenticated calls using Bearer Tokens and structured JSON payloads to deliver instant dynamic auto-replies back to WhatsApp users.
+
+#### 4. Modular Configuration
+* Externalized core bot settings, business info, system prompts, and state values into a modular `config.json` file for scalable future expansion.
+
+---
+
+### 📸 Execution Proof & Verification
+
+#### 1. Visual Workflow Architecture
+*Full node graph processing incoming webhooks and dispatching Meta Graph API POST requests.*
+![n8n Workflow Canvas](assets/n8n-workflow-canvas.jpeg)
+
+#### 2. Successful Execution Log
+*Green success status (`200 OK`) in n8n confirming valid payload receipt and API response dispatch.*
+![n8n Webhook Execution Success](assets/webhook-test-screenshot.jpeg)
+
+#### 3. Active Tunnel Monitoring
+*Active ngrok reverse proxy handling live webhook traffic with HTTP 200 response codes.*
+![ngrok Tunnel Status](assets/ngrok-tunnel-status.jpeg)
+
+#### 4. End-to-End WhatsApp Chat Test
+*Live WhatsApp test conversation confirming incoming user prompts and automated n8n responses.*
+![WhatsApp Chat Proof](assets/whatsapp-reply-test.jpeg)
+
 
 ## 📁 Repository Structure
 
