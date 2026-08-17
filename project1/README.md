@@ -504,23 +504,6 @@ Screenshots documenting the working system:
 
 ---
 
-# 🚀 Future Improvements
-
-Potential future improvements include:
-
-* Real-time calendar integration
-* Appointment availability management
-* Appointment cancellation
-* Appointment rescheduling
-* Automated Telegram reminders
-* Admin dashboard
-* Human-support notifications
-* PostgreSQL or Supabase backend
-* Multiple service providers
-* Cloud deployment
-* User authentication
-
----
 
 # 🎯 What This Project Demonstrates
 
