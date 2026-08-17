@@ -189,7 +189,7 @@ All Task 2 deliverables are modularly organized inside the `tasks/task2-whatsapp
 
 ```text
 .
-├── assets/           # Central repository for visual proofs & screenshots
+├── assets/                  # Central repository for visual proofs & screenshots
 │   ├── .gitkeep
 │   ├── n8n-workflow-canvas.jpeg
 │   ├── n8n.png
@@ -197,12 +197,22 @@ All Task 2 deliverables are modularly organized inside the `tasks/task2-whatsapp
 │   ├── ngrok.png
 │   ├── webhook-test-screenshot.jpeg
 │   └── whatsapp-reply-test.jpeg
-├── tasks/            # Task deliverables & workflow exports
+├── project1/                # Project 1: SlotWise Telegram Concierge
+│   ├── assets/
+│   │   ├── n8n-canvas.jpeg
+│   │   ├── n8n-execution-booking.jpeg
+│   │   ├── n8n-execution-handoff.jpeg
+│   │   ├── sheets-bookings.jpeg
+│   │   ├── sheets-handoffs.jpeg
+│   │   └── telegram-chat.jpeg
+│   ├── README.md
+│   └── workflow.json
+├── tasks/                   # Internship tasks & phased deliverables
 │   └── task2-whatsapp-phase1/
 │       ├── config.json
 │       ├── flow.mmd
 │       ├── messages.md
 │       ├── workflow.json
 │       └── README.md
-└── README.md         # Main internship documentation & progress log
+└── README.md                # Main internship documentation & progress log
 ```
