@@ -182,7 +182,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://api.telegram.org/bot8588445572:AAFCczR09rRMF63U9QUZSbGKe0D-TSRMhE0/sendMessage",
+        "url": "https://api.telegram.org/bot<YOUR_TELEGRAM_BOT_TOKEN>/sendMessage",
         "sendBody": true,
         "bodyParameters": {
           "parameters": [
