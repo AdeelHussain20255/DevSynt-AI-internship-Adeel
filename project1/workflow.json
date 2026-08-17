@@ -1,0 +1,470 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        256,
+        0
+      ],
+      "id": "d5f0b16b-1a49-4c9f-87ec-d66bdfb37807",
+      "name": "Telegram Trigger",
+      "webhookId": "3599b087-a192-49b4-a4e2-9e34b9f64b44",
+      "credentials": {
+        "telegramApi": {
+          "id": "CnROHOdeGhvSTJWc",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1FxP3By20yEk0twty6QJcXbSejZKufCFueO__ykD0AmA",
+          "mode": "list",
+          "cachedResultName": "SlotWise_Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FxP3By20yEk0twty6QJcXbSejZKufCFueO__ykD0AmA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Bookings",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FxP3By20yEk0twty6QJcXbSejZKufCFueO__ykD0AmA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Username": "={{ $('Telegram Trigger').item.json.message.from.username || $('Telegram Trigger').item.json.message.from.first_name }}",
+            "Service": "={{ $('AI Agent').item.json.output.match(/Service=\"([^\"]+)\"/)?.[1] || 'Unknown' }}",
+            "Date": "={{ $('AI Agent').item.json.output.match(/Date=\"([^\"]+)\"/)?.[1] || 'Unknown' }}",
+            "Time": "={{ $('AI Agent').item.json.output.match(/Time=\"([^\"]+)\"/)?.[1] || 'Unknown' }}",
+            "Status": "Confirmed",
+            "Timestamp": "={{ $now.toFormat('yyyy-MM-dd HH:mm:ss') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Username",
+              "displayName": "Username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Service",
+              "displayName": "Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1344,
+        -80
+      ],
+      "id": "16d1f36d-997d-459e-9ccf-f01cbbd223a8",
+      "name": "Log Booking",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "v5nqPy09XQ5myRJ0",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "=[ROLE]\nYou are a Senior AI Booking Specialist for SlotWise, known for delivering clear, empathetic, and professional automated reservation support for restaurants and parlors.\n\n[CONTEXT]\nUser Name: ={{ $('Telegram Trigger').item.json.message.from.first_name }}\nPlatform: Telegram Chat\nBusiness Domain: Table & Appointment Booking Concierge\n\n[TASK]\nGuide the customer through a step-by-step chat flow to complete a booking, or trigger a human handoff if the query is off-script.\nFollow this sequence:\n1. GREETING: Warmly welcome the user by name and ask if they would like to book a table/appointment or ask a question.\n2. SERVICE SELECTION: Ask for their desired service (e.g., haircut/facial/manicure for parlors, or table size/occasion for restaurants).\n3. TIMING & SLOTS: Ask for their preferred day and time, then present 2–3 mock available slots (e.g., 5:00 PM, 6:30 PM, 8:00 PM).\n4. CONFIRMATION: Summarize the booking details (Service, Date, Time) and ask the user \"Shall I finalize this booking?\". \n5. FINALIZATION: Only after the user explicitly confirms (e.g., says \"yes\", \"confirm\", \"book it\"), thank them and output the completion tag.\n6. HANDOFF: If the user asks off-script questions (pricing negotiations, complex complaints, or unrelated topics), respond with: \"Let me connect you with our team.\"\n\n[FORMAT]\n- Short, natural chat responses optimized for messaging.\n- Friendly, direct conversational turns without email headers or robotic fluff.\n- MANDATORY SYSTEM TAGS (Append at the very end of your response when applicable):\n  * On Booking Finalized (ONLY when the user says 'yes' to confirm):\n    [BOOKING_COMPLETE: Service=\"<service>\", Date=\"<date>\", Time=\"<time>\"]\n  * On Off-Script Handoff:\n    [HANDOFF_TRIGGERED]\n\n[CONSTRAINTS]\n- Tone: Empathetic, clear, and concise.\n- Never confirm a booking until Service, Date, and Time are clearly specified AND the user has agreed to finalize.\n- Keep each reply under 80 words for optimal Telegram chat readability.\n- Strictly enforce the handoff rule for complaints or custom requests outside booking."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        544,
+        0
+      ],
+      "id": "fb1bff9a-f7ad-4489-ac76-f830c79dfe3b",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        416,
+        208
+      ],
+      "id": "4be957a4-3276-4144-adf0-bd66ac55d8f7",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "tSUESGk4fzh32fS7",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        560,
+        208
+      ],
+      "id": "16bce381-5519-4a81-8b8e-706853481d92",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8588445572:AAFCczR09rRMF63U9QUZSbGKe0D-TSRMhE0/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "={{ $('Telegram Trigger').first().json.message.chat.id }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $('AI Agent').item.json.output.replace(/\\[BOOKING_COMPLETE:.*?\\]|\\[HANDOFF_TRIGGERED\\]/g, '').trim() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        848,
+        0
+      ],
+      "id": "99ecb01d-5e16-4965-b046-637d2d2c19e8",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('AI Agent').item.json.output }}",
+                    "rightValue": "[BOOKING_COMPLETE",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "a484b21c-368e-4ad1-a9f1-4a74c95c93ef"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "=Booking"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "09493816-fc08-4859-9903-d29e6beb1673",
+                    "leftValue": "={{ $('AI Agent').item.json.output }}",
+                    "rightValue": "[HANDOFF_TRIGGERED]",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "=Handoff"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1056,
+        0
+      ],
+      "id": "3f7054d9-4ad8-40c3-ae1d-e33f0ce06af7",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1FxP3By20yEk0twty6QJcXbSejZKufCFueO__ykD0AmA",
+          "mode": "list",
+          "cachedResultName": "SlotWise_Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FxP3By20yEk0twty6QJcXbSejZKufCFueO__ykD0AmA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1671648068,
+          "mode": "list",
+          "cachedResultName": "Handoffs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FxP3By20yEk0twty6QJcXbSejZKufCFueO__ykD0AmA/edit#gid=1671648068"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Username": "={{ $('Telegram Trigger').item.json.message.from.username || $('Telegram Trigger').item.json.message.from.first_name }}",
+            "Status": "Pending Review",
+            "Timestamp": "={{ $now.toFormat('yyyy-MM-dd HH:mm:ss') }}",
+            "User Message": "={{ $('Telegram Trigger').item.json.message.text }}",
+            "Reason": "=Off-Script / Negotiation / Support"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Username",
+              "displayName": "Username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "User Message",
+              "displayName": "User Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Reason",
+              "displayName": "Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1328,
+        80
+      ],
+      "id": "4d328b3f-8dbe-4d0b-9f09-7311d8f26405",
+      "name": "Handoff",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "v5nqPy09XQ5myRJ0",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Booking": {
+      "main": [
+        []
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Log Booking",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Handoff",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "7cbbcce3-c5b8-4ada-98f6-4b3866037f31",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8f257f8f42b5e612f8b18f24ed376d430e1b0c1e73fd90c9b6bab71d8bfde604"
+  },
+  "nodeGroups": [],
+  "id": "KAnykeeUk2se4gc7",
+  "tags": []
+}
