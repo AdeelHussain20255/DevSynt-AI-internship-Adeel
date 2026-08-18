@@ -11,8 +11,8 @@
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.4,
       "position": [
-        256,
-        0
+        -160,
+        48
       ],
       "id": "d5f0b16b-1a49-4c9f-87ec-d66bdfb37807",
       "name": "Telegram Trigger",
@@ -44,10 +44,10 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "Username": "={{ $('Telegram Trigger').item.json.message.from.username || $('Telegram Trigger').item.json.message.from.first_name }}",
-            "Service": "={{ $('AI Agent').item.json.output.match(/Service=\"([^\"]+)\"/)?.[1] || 'Unknown' }}",
-            "Date": "={{ $('AI Agent').item.json.output.match(/Date=\"([^\"]+)\"/)?.[1] || 'Unknown' }}",
-            "Time": "={{ $('AI Agent').item.json.output.match(/Time=\"([^\"]+)\"/)?.[1] || 'Unknown' }}",
+            "Username": "={{ $('Telegram Trigger').first().json.message.from.username || $('Telegram Trigger').first().json.message.from.first_name }}",
+            "Service": "={{ $('AI Agent').first().json.output.match(/Service=\"([^\"]+)\"/)?.[1] || 'Unknown' }}",
+            "Date": "={{ $('AI Agent').first().json.output.match(/Date=\"([^\"]+)\"/)?.[1] || 'Unknown' }}",
+            "Time": "={{ $('AI Agent').first().json.output.match(/Time=\"([^\"]+)\"/)?.[1] || 'Unknown' }}",
             "Status": "Confirmed",
             "Timestamp": "={{ $now.toFormat('yyyy-MM-dd HH:mm:ss') }}"
           },
@@ -131,9 +131,9 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=={{ $json.message.text }}",
+        "text": "=={{ $('Telegram Trigger').first().json.message.text }}",
         "options": {
-          "systemMessage": "=[ROLE]\nYou are a Senior AI Booking Specialist for SlotWise, known for delivering clear, empathetic, and professional automated reservation support for restaurants and parlors.\n\n[CONTEXT]\nUser Name: ={{ $('Telegram Trigger').item.json.message.from.first_name }}\nPlatform: Telegram Chat\nBusiness Domain: Table & Appointment Booking Concierge\n\n[TASK]\nGuide the customer through a step-by-step chat flow to complete a booking, or trigger a human handoff if the query is off-script.\nFollow this sequence:\n1. GREETING: Warmly welcome the user by name and ask if they would like to book a table/appointment or ask a question.\n2. SERVICE SELECTION: Ask for their desired service (e.g., haircut/facial/manicure for parlors, or table size/occasion for restaurants).\n3. TIMING & SLOTS: Ask for their preferred day and time, then present 2–3 mock available slots (e.g., 5:00 PM, 6:30 PM, 8:00 PM).\n4. CONFIRMATION: Summarize the booking details (Service, Date, Time) and ask the user \"Shall I finalize this booking?\". \n5. FINALIZATION: Only after the user explicitly confirms (e.g., says \"yes\", \"confirm\", \"book it\"), thank them and output the completion tag.\n6. HANDOFF: If the user asks off-script questions (pricing negotiations, complex complaints, or unrelated topics), respond with: \"Let me connect you with our team.\"\n\n[FORMAT]\n- Short, natural chat responses optimized for messaging.\n- Friendly, direct conversational turns without email headers or robotic fluff.\n- MANDATORY SYSTEM TAGS (Append at the very end of your response when applicable):\n  * On Booking Finalized (ONLY when the user says 'yes' to confirm):\n    [BOOKING_COMPLETE: Service=\"<service>\", Date=\"<date>\", Time=\"<time>\"]\n  * On Off-Script Handoff:\n    [HANDOFF_TRIGGERED]\n\n[CONSTRAINTS]\n- Tone: Empathetic, clear, and concise.\n- Never confirm a booking until Service, Date, and Time are clearly specified AND the user has agreed to finalize.\n- Keep each reply under 80 words for optimal Telegram chat readability.\n- Strictly enforce the handoff rule for complaints or custom requests outside booking."
+          "systemMessage": "=[ROLE]\nYou are a Senior AI Booking Specialist for SlotWise, known for delivering clear, empathetic, and professional automated reservation support for restaurants and parlors.\n\n[CONTEXT]\nUser Name: {{ $('Telegram Trigger').first().json.message.from.first_name }}\nPlatform: Telegram Chat\nBusiness Domain: Table & Appointment Booking Concierge\nTODAY'S DATE: {{ $now.format('EEEE, MMMM d, yyyy') }}\n\nCURRENT LIVE AVAILABLE SLOTS:\n{{ $('Format Availability').first().json.available_slots_text }}\n\n[TASK]\nGuide the customer through a step-by-step chat flow to complete a booking, or trigger a human handoff if the query is off-script.\nFollow this sequence:\n1. GREETING: Warmly welcome the user by name and ask if they would like to book a table/appointment or ask a question.\n2. SERVICE SELECTION: Ask for their desired service (e.g., haircut/facial/manicure for parlors, or table size/occasion for restaurants).\n3. TIMING & SLOTS: Ask for their preferred day and present ALL available time slots for that specific date strictly from the CURRENT LIVE AVAILABLE SLOTS list above.\n4. CONFIRMATION: Summarize the booking details (Service, Date, Time) and ask the user \"Shall I finalize this booking?\". \n5. FINALIZATION: Only after the user explicitly confirms (e.g., says \"yes\", \"confirm\", \"book it\", \"yes plz do\"), thank them and ALWAYS append the mandatory [BOOKING_COMPLETE] system tag on a new line at the very end of your final response.\n6. HANDOFF: If the user asks off-script questions (pricing negotiations, complex complaints, or unrelated topics), respond with: \"Let me connect you with our team.\" and append [HANDOFF_TRIGGERED].\n\n[FORMAT]\n- Short, natural chat responses optimized for messaging.\n- Friendly, direct conversational turns without email headers or robotic fluff.\n- MANDATORY SYSTEM TAGS (You MUST append the relevant tag at the very end of your response when applicable):\n  * On Booking Finalized (ONLY when the user says 'yes' to confirm):\n    [BOOKING_COMPLETE: Service=\"<Service>\", Date=\"<Date>\", Time=\"<Time>\"]\n  * On Off-Script Handoff:\n    [HANDOFF_TRIGGERED]\n\n[FEW-SHOT EXAMPLES]\n\nUser: \"yes plz do\"\nAssistant: Wonderful! Your manicure is all set for August 26th at 5:00 PM. We look forward to seeing you then!\n[BOOKING_COMPLETE: Service=\"Manicure\", Date=\"2026-08-26\", Time=\"5:00 PM\"]\n\nUser: \"confirm it\"\nAssistant: Perfect! Your haircut is booked for August 24th at 1:00 PM. See you soon!\n[BOOKING_COMPLETE: Service=\"Haircut\", Date=\"2026-08-24\", Time=\"1:00 PM\"]\n\nUser: \"Can I get a discount?\"\nAssistant: Let me connect you with our team.\n[HANDOFF_TRIGGERED]\n\n[CRITICAL FINALIZATION RULE]\nWhen the user confirms a booking, your response MUST end with the tag populated with actual values on a new line.\nExample:\n\"Fantastic! Your facial is all set for August 25th at 7:30 PM. We look forward to seeing you then!\n[BOOKING_COMPLETE: Service=\"Facial\", Date=\"2026-08-25\", Time=\"7:30 PM\"]\"\n\n[CONSTRAINTS]\n- Tone: Empathetic, clear, and concise.\n- ALWAYS append [BOOKING_COMPLETE: Service=\"<Service>\", Date=\"<Date>\", Time=\"<Time>\"] with actual details at the very end of your message when the user confirms, so the workflow can log it to Google Sheets.\n- Show ALL available time slots for the user's selected date rather than hiding or capping them.\n- Never confirm a booking until Service, Date, and Time are clearly specified AND the user has agreed to finalize.\n- Do NOT offer time slots that are absent from CURRENT LIVE AVAILABLE SLOTS.\n- Keep each reply under 80 words for optimal Telegram chat readability.\n- Strictly enforce the handoff rule for complaints or custom requests outside booking."
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -148,7 +148,9 @@
     {
       "parameters": {
         "modelName": "models/gemini-3.1-flash-lite",
-        "options": {}
+        "options": {
+          "temperature": 0.1
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.1,
@@ -168,7 +170,7 @@
     {
       "parameters": {
         "sessionIdType": "customKey",
-        "sessionKey": "=={{ $('Telegram Trigger').item.json.message.chat.id }}"
+        "sessionKey": "=={{ $('Telegram Trigger').first().json.message.chat.id }}"
       },
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.4,
@@ -292,10 +294,10 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "Username": "={{ $('Telegram Trigger').item.json.message.from.username || $('Telegram Trigger').item.json.message.from.first_name }}",
+            "Username": "={{ $('Telegram Trigger').first().json.message.from.username || $('Telegram Trigger').first().json.message.from.first_name }}",
             "Status": "Pending Review",
             "Timestamp": "={{ $now.toFormat('yyyy-MM-dd HH:mm:ss') }}",
-            "User Message": "={{ $('Telegram Trigger').item.json.message.text }}",
+            "User Message": "={{ $('Telegram Trigger').first().json.message.text }}",
             "Reason": "=Off-Script / Negotiation / Support"
           },
           "matchingColumns": [],
@@ -370,6 +372,99 @@
           "name": "Google Sheets account"
         }
       }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1FxP3By20yEk0twty6QJcXbSejZKufCFueO__ykD0AmA",
+          "mode": "list",
+          "cachedResultName": "SlotWise_Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FxP3By20yEk0twty6QJcXbSejZKufCFueO__ykD0AmA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 526657153,
+          "mode": "list",
+          "cachedResultName": "Schedule",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FxP3By20yEk0twty6QJcXbSejZKufCFueO__ykD0AmA/edit#gid=526657153"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -32,
+        256
+      ],
+      "id": "610160a4-7fa9-488e-98da-a37eeae095bd",
+      "name": "Get Schedule",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "v5nqPy09XQ5myRJ0",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1FxP3By20yEk0twty6QJcXbSejZKufCFueO__ykD0AmA",
+          "mode": "list",
+          "cachedResultName": "SlotWise_Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FxP3By20yEk0twty6QJcXbSejZKufCFueO__ykD0AmA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Bookings",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FxP3By20yEk0twty6QJcXbSejZKufCFueO__ykD0AmA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        80,
+        32
+      ],
+      "id": "1eff6fae-dad2-444f-83cc-0b21c8021185",
+      "name": "Get Bookings",
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "v5nqPy09XQ5myRJ0",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Retrieve output arrays from both Google Sheets nodes\nconst schedule = $('Get Schedule').all().map(item => item.json);\nconst bookings = $('Get Bookings').all().map(item => item.json);\n\n// Create a fast-lookup set of booked slot keys (\"YYYY-MM-DD|Time\")\nconst bookedSlots = new Set(\n  bookings\n    .filter(b => String(b.Status).toLowerCase() === 'confirmed')\n    .map(b => `${b.Date}|${b.Time}`)\n);\n\n// Filter out any schedule slots that are in the booked set\nconst available = schedule.filter(slot => {\n  const key = `${slot.Date}|${slot.Time}`;\n  return !bookedSlots.has(key);\n});\n\nreturn available.map(slot => ({ json: slot }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        192,
+        272
+      ],
+      "id": "7ad227e5-e705-4eb3-a16a-e5e539f72294",
+      "name": "Calculate Availability"
+    },
+    {
+      "parameters": {
+        "jsCode": "const slots = $input.all().map(item => item.json);\n\n// Group time slots by date\nconst grouped = {};\nslots.forEach(s => {\n  if (!grouped[s.Date]) grouped[s.Date] = [];\n  grouped[s.Date].push(s.Time);\n});\n\n// Format as readable schedule text\nlet summary = \"Available Slots:\\n\";\nfor (const [date, times] of Object.entries(grouped)) {\n  summary += `- ${date}: ${times.join(', ')}\\n`;\n}\n\nreturn [{ json: { available_slots_text: summary } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        304,
+        48
+      ],
+      "id": "aeb9e7be-4641-4579-8da6-355a58b41463",
+      "name": "Format Availability"
     }
   ],
   "pinData": {},
@@ -378,7 +473,7 @@
       "main": [
         [
           {
-            "node": "AI Agent",
+            "node": "Get Schedule",
             "type": "main",
             "index": 0
           }
@@ -451,15 +546,59 @@
           }
         ]
       ]
+    },
+    "Get Schedule": {
+      "main": [
+        [
+          {
+            "node": "Get Bookings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Bookings": {
+      "main": [
+        [
+          {
+            "node": "Calculate Availability",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Availability": {
+      "main": [
+        [
+          {
+            "node": "Format Availability",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Availability": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "7cbbcce3-c5b8-4ada-98f6-4b3866037f31",
+  "versionId": "30ce6473-7fd6-4210-bd75-982a0a529fda",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8f257f8f42b5e612f8b18f24ed376d430e1b0c1e73fd90c9b6bab71d8bfde604"
