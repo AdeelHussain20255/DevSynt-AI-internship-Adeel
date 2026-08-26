@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangChain + LangGraph Learning Week</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <h1 class="logo">LangChain + LangGraph</h1>
+            <p class="tagline">Mastering AI Automation Fundamentals</p>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Learning Week: Day 1 → Day 6</h2>
+            <p>A complete guide to understanding chains, agents, memory, orchestration, and building a real retail data pipeline</p>
+            <div class="flow-indicator">
+                <span class="flow-dot">1</span>
+                <span class="flow-line"></span>
+                <span class="flow-dot">2</span>
+                <span class="flow-line"></span>
+                <span class="flow-dot">3</span>
+                <span class="flow-line"></span>
+                <span class="flow-dot">4</span>
+                <span class="flow-line"></span>
+                <span class="flow-dot">5</span>
+                <span class="flow-line"></span>
+                <span class="flow-dot project-dot">6</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Day Navigation Tabs -->
+    <section class="day-tabs">
+        <button class="tab-btn active" data-day="1">Day 1: Chains</button>
+        <button class="tab-btn" data-day="2">Day 2: Templates</button>
+        <button class="tab-btn" data-day="3">Day 3: Memory & Tools</button>
+        <button class="tab-btn" data-day="4">Day 4: LangGraph</button>
+        <button class="tab-btn" data-day="5">Day 5: Orchestrator</button>
+        <button class="tab-btn tab-btn-project" data-day="6">Day 6: The Project</button>
+    </section>
+
+    <!-- Content Container -->
+    <main class="container">
+
+        <!-- DAY 1: LANGCHAIN & CHAINS -->
+        <section id="day-1" class="day-content active">
+            <div class="day-header">
+                <h2>Day 1: What is LangChain?</h2>
+                <p class="day-subtitle">Chains vs. Raw API Calls</p>
+            </div>
+
+            <div class="content-grid">
+                <div class="concept-card">
+                    <h3>What is a Chain?</h3>
+                    <p>A <strong>chain</strong> is a fixed, step-by-step pipeline where data flows in a straight line from start to finish. Instead of calling an LLM API directly every time, LangChain gives you reusable building blocks.</p>
+                    <div class="example-box">
+                        <strong>Without LangChain (Raw API):</strong>
+                        <pre>prompt = "Explain what is a chain"
+response = llm.call(prompt)
+# You write the full prompt every time
+# Raw text back - hard to parse</pre>
+                    </div>
+                    <div class="example-box">
+                        <strong>With LangChain (Chain):</strong>
+                        <pre>chain = prompt_template | llm | output_parser
+result = chain.invoke({"topic": "chains"})
+# Reusable, structured, reliable</pre>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>Key Concepts</h3>
+                    <ul class="key-terms">
+                        <li><strong>LLM Wrapper:</strong> A clean interface to any LLM (GPT, Gemini, Groq)</li>
+                        <li><strong>Prompt Template:</strong> A reusable prompt with {variables} you fill in</li>
+                        <li><strong>Chain:</strong> Connected components (template → LLM → parser)</li>
+                        <li><strong>LCEL:</strong> LangChain Expression Language - uses | to connect pieces</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Chain Diagram -->
+            <div class="diagram-section">
+                <h3>The 5-Step Chain Pipeline</h3>
+                <svg class="chain-diagram" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Step 1 -->
+                    <rect x="20" y="100" width="120" height="100" fill="#00D9FF" stroke="#0099CC" stroke-width="2" rx="8"/>
+                    <text x="80" y="140" text-anchor="middle" font-size="14" font-weight="bold" fill="#003344">1. User</text>
+                    <text x="80" y="160" text-anchor="middle" font-size="12" fill="#003344">Input</text>
+                    <text x="80" y="180" text-anchor="middle" font-size="10" fill="#003344">"Explain LangChain"</text>
+
+                    <!-- Arrow 1 -->
+                    <path d="M 140 150 L 180 150" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+                    <!-- Step 2 -->
+                    <rect x="180" y="100" width="120" height="100" fill="#9D4EDD" stroke="#7C2CB0" stroke-width="2" rx="8"/>
+                    <text x="240" y="140" text-anchor="middle" font-size="14" font-weight="bold" fill="white">2. Prompt</text>
+                    <text x="240" y="160" text-anchor="middle" font-size="12" fill="white">Template</text>
+                    <text x="240" y="180" text-anchor="middle" font-size="10" fill="#e0c8ff">Format + Rules</text>
+
+                    <!-- Arrow 2 -->
+                    <path d="M 300 150 L 340 150" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+                    <!-- Step 3 -->
+                    <rect x="340" y="100" width="120" height="100" fill="#FF006E" stroke="#D50071" stroke-width="2" rx="8"/>
+                    <text x="400" y="140" text-anchor="middle" font-size="14" font-weight="bold" fill="white">3. LLM</text>
+                    <text x="400" y="160" text-anchor="middle" font-size="12" fill="white">Model</text>
+                    <text x="400" y="180" text-anchor="middle" font-size="10" fill="#ffc0dc">Generates Response</text>
+
+                    <!-- Arrow 3 -->
+                    <path d="M 460 150 L 500 150" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+                    <!-- Step 4 -->
+                    <rect x="500" y="100" width="120" height="100" fill="#FB5607" stroke="#D94A00" stroke-width="2" rx="8"/>
+                    <text x="560" y="140" text-anchor="middle" font-size="14" font-weight="bold" fill="white">4. Output</text>
+                    <text x="560" y="160" text-anchor="middle" font-size="12" fill="white">Parser</text>
+                    <text x="560" y="180" text-anchor="middle" font-size="10" fill="#ffe0cc">Structure (JSON)</text>
+
+                    <!-- Arrow 4 -->
+                    <path d="M 620 150 L 660 150" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+                    <!-- Step 5 -->
+                    <rect x="660" y="100" width="120" height="100" fill="#06FFA5" stroke="#00CC7A" stroke-width="2" rx="8"/>
+                    <text x="720" y="140" text-anchor="middle" font-size="14" font-weight="bold" fill="#003322">5. Final</text>
+                    <text x="720" y="160" text-anchor="middle" font-size="12" fill="#003322">Answer</text>
+                    <text x="720" y="180" text-anchor="middle" font-size="10" fill="#003322">Ready to Use</text>
+
+                    <!-- Arrow marker definition -->
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#333"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <div class="comparison-table">
+                <h3>Chain vs. Raw API Calls</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Raw API Call</th>
+                            <th>LangChain Chain</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Reusability</td>
+                            <td>Write prompt every time</td>
+                            <td>Template reusable</td>
+                        </tr>
+                        <tr>
+                            <td>Output Structure</td>
+                            <td>Free-flowing text</td>
+                            <td>Structured (JSON/Pydantic)</td>
+                        </tr>
+                        <tr>
+                            <td>Switching LLMs</td>
+                            <td>Rewrite entire code</td>
+                            <td>Change one line</td>
+                        </tr>
+                        <tr>
+                            <td>Speed</td>
+                            <td>Fast, single step</td>
+                            <td>Slightly slower (structured)</td>
+                        </tr>
+                        <tr>
+                            <td>Flexibility</td>
+                            <td>Fixed behavior</td>
+                            <td>Fixed behavior (predictable)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="key-insight">
+                <strong>Key Takeaway:</strong> Chains are predictable, reusable, and reliable. But they're rigid — they always follow the same path. If an LLM doesn't know something, a chain can't decide to search the web or try a different approach. That's where agents come in (we'll see this in Day 5).
+            </div>
+        </section>
+
+        <!-- DAY 2: PROMPT TEMPLATES & OUTPUT PARSERS -->
+        <section id="day-2" class="day-content">
+            <div class="day-header">
+                <h2>Day 2: Prompt Templates & Output Parsers</h2>
+                <p class="day-subtitle">Reusable Prompts + Structured Outputs</p>
+            </div>
+
+            <div class="content-grid">
+                <div class="concept-card">
+                    <h3>Prompt Templates</h3>
+                    <p>A prompt template lets you write a prompt once with placeholders like <code>{product_name}</code> and reuse it with different values. Instead of hardcoding every detail, you create a template and inject variables at runtime.</p>
+                    <div class="example-box">
+                        <strong>Template Example:</strong>
+                        <pre>template = """You are a marketing expert.
+Write a 2-sentence product description for: {product_name}
+Target audience: {audience}"""
+
+# Use multiple times
+result1 = template.format(product_name="Laptop", audience="Developers")
+result2 = template.format(product_name="Phone", audience="Students")</pre>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>Output Parsers</h3>
+                    <p>By default, an LLM replies in free-flowing text — hard for code to use reliably. An output parser instructs the LLM to reply in a specific structure (like JSON) so your code can read fields directly.</p>
+                    <div class="example-box">
+                        <strong>Without Parser (Messy):</strong>
+                        <pre>response = "The product costs $99 and has 4.5 stars"
+# How do you extract price? Regex? Fragile!</pre>
+                    </div>
+                    <div class="example-box">
+                        <strong>With JsonOutputParser (Clean):</strong>
+                        <pre>response = {"price": 99, "rating": 4.5}
+price = response["price"]  # Easy!</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="diagram-section">
+                <h3>Template → LLM → Parser Flow</h3>
+                <svg class="template-diagram" viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Template -->
+                    <g>
+                        <rect x="20" y="60" width="140" height="120" fill="#9D4EDD" stroke="#7C2CB0" stroke-width="2" rx="8"/>
+                        <text x="90" y="95" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Prompt Template</text>
+                        <text x="90" y="120" text-anchor="middle" font-size="11" fill="white">"Explain {topic}</text>
+                        <text x="90" y="135" text-anchor="middle" font-size="11" fill="white">to {audience}"</text>
+                        <text x="90" y="150" text-anchor="middle" font-size="11" fill="#00D9FF">Fill Variables</text>
+                    </g>
+
+                    <!-- Arrow -->
+                    <path d="M 160 120 L 210 120" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead2)"/>
+
+                    <!-- LLM -->
+                    <g>
+                        <rect x="210" y="60" width="140" height="120" fill="#FF006E" stroke="#D50071" stroke-width="2" rx="8"/>
+                        <text x="280" y="95" text-anchor="middle" font-size="14" font-weight="bold" fill="white">LLM</text>
+                        <text x="280" y="120" text-anchor="middle" font-size="11" fill="white">Generates</text>
+                        <text x="280" y="135" text-anchor="middle" font-size="11" fill="white">Response</text>
+                        <text x="280" y="150" text-anchor="middle" font-size="11" fill="#00D9FF">Raw Text</text>
+                    </g>
+
+                    <!-- Arrow -->
+                    <path d="M 350 120 L 400 120" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead2)"/>
+
+                    <!-- Parser -->
+                    <g>
+                        <rect x="400" y="60" width="140" height="120" fill="#06FFA5" stroke="#00CC7A" stroke-width="2" rx="8"/>
+                        <text x="470" y="95" text-anchor="middle" font-size="14" font-weight="bold" fill="#111">Output Parser</text>
+                        <text x="470" y="120" text-anchor="middle" font-size="11" fill="#111">Structures</text>
+                        <text x="470" y="135" text-anchor="middle" font-size="11" fill="#111">Output</text>
+                        <text x="470" y="150" text-anchor="middle" font-size="11" fill="#007a4d">Clean JSON</text>
+                    </g>
+
+                    <!-- Arrow -->
+                    <path d="M 540 120 L 590 120" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead2)"/>
+
+                    <!-- Result -->
+                    <g>
+                        <rect x="590" y="60" width="95" height="120" fill="#FB5607" stroke="#D94A00" stroke-width="2" rx="8"/>
+                        <text x="637.5" y="110" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Result</text>
+                        <text x="637.5" y="135" text-anchor="middle" font-size="11" fill="#ffe0cc">Ready for Code</text>
+                    </g>
+
+                    <defs>
+                        <marker id="arrowhead2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#333"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <div class="content-grid">
+                <div class="concept-card">
+                    <h3>Key Concepts</h3>
+                    <ul class="key-terms">
+                        <li><strong>PromptTemplate:</strong> Create reusable prompts with variables</li>
+                        <li><strong>StrOutputParser:</strong> Returns response as plain text string</li>
+                        <li><strong>JsonOutputParser:</strong> Returns response as valid JSON object</li>
+                        <li><strong>Pydantic Models:</strong> Define expected output structure precisely</li>
+                        <li><strong>Structured Output:</strong> Data your code can reliably parse</li>
+                    </ul>
+                </div>
+
+                <div class="concept-card">
+                    <h3>Why This Matters</h3>
+                    <p>Parsers make your application <strong>reliable</strong>. Instead of hoping the LLM's response contains what you need, you enforce a contract: "reply with exactly these fields in this format."</p>
+                    <p style="margin-top: 10px;">Example: A customer service bot that extracts sentiment, urgency, and category from emails — without a parser, you'd spend time writing regex. With a parser, the LLM does it right.</p>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <strong>Key Takeaway:</strong> Prompt templates make your code DRY (Don't Repeat Yourself). Output parsers make your code reliable. Together, they transform unstructured LLM responses into data your application can trust and use.
+            </div>
+        </section>
+
+        <!-- DAY 3: MEMORY & TOOL-CALLING -->
+        <section id="day-3" class="day-content">
+            <div class="day-header">
+                <h2>Day 3: Memory & Tool-Calling</h2>
+                <p class="day-subtitle">Conversation Context & External Functions</p>
+            </div>
+
+            <div class="content-grid">
+                <div class="concept-card">
+                    <h3>Memory: Giving LLMs Context</h3>
+                    <p>By default, an LLM has no memory — each call is independent. It can't remember previous messages or refer to earlier parts of a conversation.</p>
+                    <div class="example-box">
+                        <strong>Without Memory:</strong>
+                        <pre>User: "My name is Ahmed"
+Bot: "Nice to meet you, Ahmed!"
+
+User: "What's my name?"
+Bot: "I don't know, you didn't tell me" ❌</pre>
+                    </div>
+                    <div class="example-box">
+                        <strong>With Memory:</strong>
+                        <pre>memory = ConversationMemory()
+# Keeps track of all messages
+# Feeds them back into each new call
+memory.add("User: My name is Ahmed")
+memory.add("Bot: Nice to meet you, Ahmed!")
+
+User: "What's my name?"
+Bot: "Your name is Ahmed" ✓</pre>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>Tool-Calling: Giving LLMs Actions</h3>
+                    <p>Tool-calling means giving the LLM access to functions it can choose to use — a calculator, a search engine, a database lookup. The LLM decides <strong>when</strong> to call a tool and <strong>what</strong> to pass into it.</p>
+                    <div class="example-box">
+                        <strong>Without Tools:</strong>
+                        <pre>User: "What's 2847 × 3956?"
+LLM: "I think it's around 11 million" ❌</pre>
+                    </div>
+                    <div class="example-box">
+                        <strong>With Calculator Tool:</strong>
+                        <pre>Tools available: [calculator, search, database]
+User: "What's 2847 × 3956?"
+LLM: "I'll use the calculator tool"
+Result: "11,270,632" ✓</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="diagram-section">
+                <h3>How Tool-Calling Works (ReAct Loop)</h3>
+                <svg class="tools-diagram" viewBox="0 0 700 510" xmlns="http://www.w3.org/2000/svg">
+                    <!-- User Query -->
+                    <circle cx="100" cy="80" r="40" fill="#00D9FF" stroke="#0099CC" stroke-width="2"/>
+                    <text x="100" y="75" text-anchor="middle" font-size="12" font-weight="bold">User</text>
+                    <text x="100" y="92" text-anchor="middle" font-size="10">Query</text>
+
+                    <!-- Arrow -->
+                    <path d="M 140 80 L 240 80" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead3)"/>
+
+                    <!-- LLM Thinks -->
+                    <rect x="240" y="40" width="120" height="80" fill="#9D4EDD" stroke="#7C2CB0" stroke-width="2" rx="8"/>
+                    <text x="300" y="65" text-anchor="middle" font-size="12" font-weight="bold">LLM</text>
+                    <text x="300" y="85" text-anchor="middle" font-size="10">Reasons</text>
+                    <text x="300" y="102" text-anchor="middle" font-size="9" fill="#00D9FF">What tool?</text>
+
+                    <!-- Arrow down to tools -->
+                    <path d="M 300 120 L 300 180" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead3)"/>
+
+                    <!-- Tools Box -->
+                    <g>
+                        <rect x="200" y="180" width="200" height="180" fill="#f9f9f9" stroke="#999" stroke-width="2" stroke-dasharray="5,5" rx="8"/>
+                        <text x="300" y="205" text-anchor="middle" font-size="13" font-weight="bold">Available Tools</text>
+
+                        <rect x="220" y="220" width="70" height="40" fill="#FB5607" stroke="#D94A00" stroke-width="2" rx="5"/>
+                        <text x="255" y="245" text-anchor="middle" font-size="11">Search</text>
+
+                        <rect x="310" y="220" width="70" height="40" fill="#FB5607" stroke="#D94A00" stroke-width="2" rx="5"/>
+                        <text x="345" y="245" text-anchor="middle" font-size="11">Calculate</text>
+
+                        <rect x="220" y="278" width="70" height="40" fill="#FB5607" stroke="#D94A00" stroke-width="2" rx="5"/>
+                        <text x="255" y="303" text-anchor="middle" font-size="11">Database</text>
+
+                        <rect x="310" y="278" width="70" height="40" fill="#FB5607" stroke="#D94A00" stroke-width="2" rx="5"/>
+                        <text x="345" y="303" text-anchor="middle" font-size="11">API Call</text>
+                    </g>
+
+                    <!-- Arrow to observation -->
+                    <path d="M 300 360 L 300 400" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead3)"/>
+
+                    <!-- Observation / Tool Result -->
+                    <rect x="220" y="400" width="160" height="55" fill="#06FFA5" stroke="#00CC7A" stroke-width="2" rx="8"/>
+                    <text x="300" y="422" text-anchor="middle" font-size="12" font-weight="bold">Tool Result</text>
+                    <text x="300" y="442" text-anchor="middle" font-size="10">(Observation)</text>
+
+                    <!-- Arrow back up to LLM for loop — kept well inside viewBox -->
+                    <path d="M 380 427 Q 480 280 355 125" stroke="#999" stroke-width="2" fill="none" marker-end="url(#arrowhead3)" stroke-dasharray="5,5"/>
+                    <text x="442" y="272" font-size="10" fill="#666">Loop until</text>
+                    <text x="442" y="286" font-size="10" fill="#666">done</text>
+
+                    <!-- Step labels -->
+                    <text x="530" y="50" font-size="12" font-weight="bold" fill="#333">ReAct Loop:</text>
+                    <text x="530" y="70" font-size="11" fill="#555">1. Reason</text>
+                    <text x="530" y="88" font-size="11" fill="#555">2. Act (pick tool)</text>
+                    <text x="530" y="106" font-size="11" fill="#555">3. Observe result</text>
+                    <text x="530" y="124" font-size="11" fill="#555">4. Repeat if needed</text>
+                    <text x="530" y="142" font-size="11" fill="#555">5. Return answer</text>
+
+                    <defs>
+                        <marker id="arrowhead3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#333"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <div class="content-grid">
+                <div class="concept-card">
+                    <h3>Key Concepts</h3>
+                    <ul class="key-terms">
+                        <li><strong>Conversation Memory:</strong> Stores chat history and feeds it back</li>
+                        <li><strong>Chat History:</strong> List of past user/assistant messages</li>
+                        <li><strong>Tool/Function Calling:</strong> LLM decides which tool to use</li>
+                        <li><strong>Tool Schema:</strong> Definition of a tool (name, description, parameters)</li>
+                        <li><strong>ReAct Loop:</strong> Reason → Act → Observe → Repeat</li>
+                    </ul>
+                </div>
+
+                <div class="concept-card">
+                    <h3>Real-World Example</h3>
+                    <p><strong>Query:</strong> "What's the weather in Paris, and what should I wear?"</p>
+                    <ol style="margin-left: 15px;">
+                        <li>LLM thinks: "I need current weather data"</li>
+                        <li>Calls weather tool → Gets "10°C, rainy"</li>
+                        <li>LLM thinks: "Now I have weather, I can answer"</li>
+                        <li>Final answer: "Bring an umbrella and a warm jacket"</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <strong>Key Takeaway:</strong> Memory lets LLMs remember context. Tool-calling lets them take actions. Together, they transform a simple language model into an intelligent agent that can hold conversations and get real work done.
+            </div>
+        </section>
+
+        <!-- DAY 4: LANGGRAPH -->
+        <section id="day-4" class="day-content">
+            <div class="day-header">
+                <h2>Day 4: What is LangGraph?</h2>
+                <p class="day-subtitle">Building Decision-Making Systems</p>
+            </div>
+
+            <div class="content-grid">
+                <div class="concept-card">
+                    <h3>Chain vs. Agent (vs. Graph)</h3>
+                    <p><strong>A chain</strong> is linear — always the same steps in the same order.</p>
+                    <p><strong>An agent</strong> is intelligent — it can decide what to do next based on the situation.</p>
+                    <p><strong>A graph</strong> is how we build these decision systems. It's a visual way to represent: nodes (steps), edges (connections), conditional edges (decisions), and state (data flowing through).</p>
+                </div>
+
+                <div class="concept-card">
+                    <h3>Core LangGraph Concepts</h3>
+                    <ul class="key-terms">
+                        <li><strong>Node:</strong> A single step or function in the graph</li>
+                        <li><strong>Edge:</strong> A connection showing what happens next</li>
+                        <li><strong>Conditional Edge:</strong> A decision point ("if result is X, go to node Y")</li>
+                        <li><strong>State:</strong> The data passed along and updated as it moves</li>
+                        <li><strong>Graph:</strong> The entire system of nodes, edges, and state</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="diagram-section">
+                <h3>Chain vs. Graph vs. Agent</h3>
+                <div style="display: flex; gap: 30px; justify-content: space-between; margin: 30px 0;">
+                    <!-- Chain -->
+                    <div style="flex: 1; text-align: center;">
+                        <h4>Chain (Linear)</h4>
+                        <svg viewBox="0 0 150 200" xmlns="http://www.w3.org/2000/svg" style="width: 100%; max-width: 150px;">
+                            <circle cx="75" cy="30" r="20" fill="#00D9FF" stroke="#0099CC" stroke-width="2"/>
+                            <text x="75" y="35" text-anchor="middle" font-size="10" font-weight="bold">Start</text>
+                            <path d="M 75 50 L 75 80" stroke="#333" stroke-width="2" marker-end="url(#arrowhead4)"/>
+                            <rect x="50" y="80" width="50" height="40" fill="#9D4EDD" stroke="#7C2CB0" stroke-width="2" rx="5"/>
+                            <text x="75" y="105" text-anchor="middle" font-size="10">Step 1</text>
+                            <path d="M 75 120 L 75 150" stroke="#333" stroke-width="2" marker-end="url(#arrowhead4)"/>
+                            <rect x="50" y="150" width="50" height="40" fill="#9D4EDD" stroke="#7C2CB0" stroke-width="2" rx="5"/>
+                            <text x="75" y="175" text-anchor="middle" font-size="10">Step 2</text>
+                            <defs>
+                                <marker id="arrowhead4" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                    <polygon points="0 0, 10 3, 0 6" fill="#333"/>
+                                </marker>
+                            </defs>
+                        </svg>
+                        <p style="margin-top: 10px; font-size: 12px; color: #666;">Always same order</p>
+                    </div>
+
+                    <!-- Graph with Decision -->
+                    <div style="flex: 1; text-align: center;">
+                        <h4>Graph (Conditional)</h4>
+                        <svg viewBox="0 0 180 200" xmlns="http://www.w3.org/2000/svg" style="width: 100%; max-width: 180px;">
+                            <circle cx="90" cy="30" r="20" fill="#00D9FF" stroke="#0099CC" stroke-width="2"/>
+                            <text x="90" y="35" text-anchor="middle" font-size="10" font-weight="bold">Start</text>
+                            <path d="M 90 50 L 90 80" stroke="#333" stroke-width="2" marker-end="url(#arrowhead5)"/>
+                            <polygon points="90,80 60,120 120,120" fill="#FF006E" stroke="#D50071" stroke-width="2"/>
+                            <text x="90" y="110" text-anchor="middle" font-size="10" fill="white">Decision</text>
+                            <!-- Left branch -->
+                            <path d="M 70 120 L 40 150" stroke="#333" stroke-width="2" marker-end="url(#arrowhead5)"/>
+                            <rect x="15" y="150" width="50" height="35" fill="#FB5607" stroke="#D94A00" stroke-width="2" rx="5"/>
+                            <text x="40" y="172" text-anchor="middle" font-size="9">Path A</text>
+                            <!-- Right branch -->
+                            <path d="M 110 120 L 140 150" stroke="#333" stroke-width="2" marker-end="url(#arrowhead5)"/>
+                            <rect x="115" y="150" width="50" height="35" fill="#FB5607" stroke="#D94A00" stroke-width="2" rx="5"/>
+                            <text x="140" y="172" text-anchor="middle" font-size="9">Path B</text>
+                            <defs>
+                                <marker id="arrowhead5" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                    <polygon points="0 0, 10 3, 0 6" fill="#333"/>
+                                </marker>
+                            </defs>
+                        </svg>
+                        <p style="margin-top: 10px; font-size: 12px; color: #666;">Can branch based on logic</p>
+                    </div>
+
+                    <!-- Agent -->
+                    <div style="flex: 1; text-align: center;">
+                        <h4>Agent (Dynamic)</h4>
+                        <svg viewBox="0 0 150 200" xmlns="http://www.w3.org/2000/svg" style="width: 100%; max-width: 150px;">
+                            <circle cx="75" cy="30" r="20" fill="#06FFA5" stroke="#00CC7A" stroke-width="2"/>
+                            <text x="75" y="35" text-anchor="middle" font-size="10" font-weight="bold">Input</text>
+                            <path d="M 75 50 L 75 80" stroke="#333" stroke-width="2" marker-end="url(#arrowhead6)"/>
+                            <circle cx="75" cy="110" r="25" fill="#9D4EDD" stroke="#7C2CB0" stroke-width="2"/>
+                            <text x="75" y="105" text-anchor="middle" font-size="9">LLM</text>
+                            <text x="75" y="118" text-anchor="middle" font-size="8">Decides</text>
+                            <!-- Curved loop back -->
+                            <path d="M 100 110 Q 130 110 130 80 L 130 50" stroke="#999" stroke-width="2" marker-end="url(#arrowhead6)" stroke-dasharray="3,3"/>
+                            <text x="125" y="75" font-size="8" fill="#666">Loop</text>
+                            <path d="M 75 135 L 75 160" stroke="#333" stroke-width="2" marker-end="url(#arrowhead6)"/>
+                            <rect x="50" y="160" width="50" height="30" fill="#FB5607" stroke="#D94A00" stroke-width="2" rx="5"/>
+                            <text x="75" y="180" text-anchor="middle" font-size="9">Result</text>
+                            <defs>
+                                <marker id="arrowhead6" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                    <polygon points="0 0, 10 3, 0 6" fill="#333"/>
+                                </marker>
+                            </defs>
+                        </svg>
+                        <p style="margin-top: 10px; font-size: 12px; color: #666;">Loops until solution found</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="diagram-section">
+                <h3>Example: Order Status System (LangGraph)</h3>
+                <svg class="order-graph" viewBox="0 0 800 440" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrowhead7" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#333"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Start Node -->
+                    <circle cx="100" cy="150" r="35" fill="#00D9FF" stroke="#0099CC" stroke-width="3"/>
+                    <text x="100" y="146" text-anchor="middle" font-size="13" font-weight="bold">Start</text>
+
+                    <!-- Arrow 1 -->
+                    <path d="M 135 150 L 210 150" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead7)"/>
+
+                    <!-- Check Order Node -->
+                    <rect x="210" y="110" width="140" height="80" fill="#9D4EDD" stroke="#7C2CB0" stroke-width="2" rx="8"/>
+                    <text x="280" y="135" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Check Order</text>
+                    <text x="280" y="155" text-anchor="middle" font-size="11" fill="white">Status</text>
+                    <text x="280" y="173" text-anchor="middle" font-size="10" fill="#00D9FF">(State: order_id)</text>
+
+                    <!-- Arrow down to decision -->
+                    <path d="M 280 190 L 280 235" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead7)"/>
+
+                    <!-- Decision Node — centred at 280,275 -->
+                    <polygon points="280,235 325,275 280,315 235,275" fill="#FF006E" stroke="#D50071" stroke-width="2"/>
+                    <text x="280" y="280" text-anchor="middle" font-size="11" font-weight="bold" fill="white">Status?</text>
+
+                    <!-- Left Branch: In Stock -->
+                    <path d="M 235 275 L 140 275" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead7)"/>
+                    <rect x="30" y="245" width="110" height="60" fill="#FB5607" stroke="#D94A00" stroke-width="2" rx="8"/>
+                    <text x="85" y="270" text-anchor="middle" font-size="12" font-weight="bold" fill="white">In Stock</text>
+                    <text x="85" y="290" text-anchor="middle" font-size="10" fill="white">Send Email</text>
+
+                    <!-- Right Branch: Out of Stock -->
+                    <path d="M 325 275 L 420 275" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead7)"/>
+                    <rect x="420" y="245" width="120" height="60" fill="#FB5607" stroke="#D94A00" stroke-width="2" rx="8"/>
+                    <text x="480" y="270" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Out of Stock</text>
+                    <text x="480" y="290" text-anchor="middle" font-size="10" fill="white">Notify Warehouse</text>
+
+                    <!-- Both branches converge at y=360 then arrow down to End -->
+                    <path d="M 85 305 L 85 360 L 278 360" stroke="#333" stroke-width="1.5" fill="none"/>
+                    <path d="M 480 305 L 480 360 L 282 360" stroke="#333" stroke-width="1.5" fill="none"/>
+                    <path d="M 280 360 L 280 378" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead7)"/>
+
+                    <!-- End Node — cy=408, r=28 → bottom at 436, fits in 440 -->
+                    <circle cx="280" cy="408" r="28" fill="#06FFA5" stroke="#00CC7A" stroke-width="2"/>
+                    <text x="280" y="413" text-anchor="middle" font-size="13" font-weight="bold">End</text>
+
+                    <!-- Legend box -->
+                    <rect x="558" y="28" width="220" height="240" fill="#f9f9f9" stroke="#e5e7eb" stroke-width="1.5" rx="10"/>
+                    <text x="668" y="52" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">How it Works</text>
+
+                    <circle cx="578" cy="74" r="8" fill="#00D9FF" stroke="#0099CC" stroke-width="1.5"/>
+                    <text x="594" y="79" font-size="11" fill="#333">Start / End Node</text>
+
+                    <rect x="569" y="92" width="18" height="14" fill="#9D4EDD" stroke="#7C2CB0" stroke-width="1" rx="2"/>
+                    <text x="594" y="103" font-size="11" fill="#333">Process Node</text>
+
+                    <polygon points="578,118 585,125 578,132 571,125" fill="#FF006E" stroke="#D50071" stroke-width="1"/>
+                    <text x="594" y="130" font-size="11" fill="#333">Decision Node</text>
+
+                    <rect x="569" y="143" width="18" height="14" fill="#FB5607" stroke="#D94A00" stroke-width="1" rx="2"/>
+                    <text x="594" y="154" font-size="11" fill="#333">Action Node</text>
+
+                    <line x1="569" y1="170" x2="762" y2="170" stroke="#e5e7eb" stroke-width="1"/>
+
+                    <text x="594" y="190" font-size="11" fill="#555">Edges = transitions</text>
+                    <text x="594" y="208" font-size="11" fill="#555">Conditional edges =</text>
+                    <text x="594" y="224" font-size="11" fill="#555">different paths based</text>
+                    <text x="594" y="240" font-size="11" fill="#555">on state / decision</text>
+                </svg>
+            </div>
+
+            <div class="content-grid">
+                <div class="concept-card">
+                    <h3>Why LangGraph?</h3>
+                    <p><strong>Chains are too simple</strong> — they can't handle "if this, then that" logic.</p>
+                    <p><strong>Agents are flexible</strong> but hard to visualize and debug.</p>
+                    <p><strong>LangGraph</strong> gives you a visual, structured way to build intelligent systems. You can see the flow, add branching logic, and know exactly what will happen.</p>
+                </div>
+
+                <div class="concept-card">
+                    <h3>State in LangGraph</h3>
+                    <p>State is the "data package" that flows through your graph. As it moves from node to node, each node can read the state and update it.</p>
+                    <div class="example-box">
+                        <strong>Example State:</strong>
+                        <pre>{
+  "order_id": "ORD-12345",
+  "status": "processing",
+  "items": ["Laptop", "Mouse"],
+  "customer": "Ahmed",
+  "action_taken": None
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <strong>Key Takeaway:</strong> LangGraph lets you build systems that can make decisions and follow different paths. It's perfect for workflows where "sometimes we do this, sometimes we do that" — like our upcoming orchestrator agent project.
+            </div>
+        </section>
+
+        <!-- DAY 5: ORCHESTRATOR AGENTS -->
+        <section id="day-5" class="day-content">
+            <div class="day-header">
+                <h2>Day 5: Orchestrator Agents</h2>
+                <p class="day-subtitle">Multi-Agent Systems & Routing</p>
+            </div>
+
+            <div class="content-grid">
+                <div class="concept-card">
+                    <h3>What is an Orchestrator Agent?</h3>
+                    <p>An <strong>orchestrator agent</strong> receives a task, figures out what needs to happen, and routes it to the right specialized agent. It's like a manager — it doesn't do the work itself, it decides <strong>who</strong> should do it.</p>
+                    <div class="example-box">
+                        <strong>Analogy:</strong>
+                        <pre>Customer Task: "I need a report on Q3 sales"
+├─ Orchestrator reads the task
+├─ Thinks: "This is a sales question"
+├─ Routes to → Sales Analysis Agent
+└─ Collects result & returns to user</pre>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>Multi-Agent Systems</h3>
+                    <p>Instead of one giant agent that can do everything, you have multiple specialized agents:</p>
+                    <ul class="key-terms">
+                        <li><strong>Sales Agent:</strong> Handles sales queries, revenue data</li>
+                        <li><strong>Support Agent:</strong> Handles customer support tickets</li>
+                        <li><strong>HR Agent:</strong> Handles hiring, benefits questions</li>
+                        <li><strong>Orchestrator:</strong> Decides which agent handles each task</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="diagram-section">
+                <h3>Orchestrator Agent Flow</h3>
+                <svg class="orchestrator-diagram" viewBox="0 0 860 600" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrowhead8" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#333"/>
+                        </marker>
+                    </defs>
+
+                    <!-- User Input -->
+                    <circle cx="80" cy="90" r="38" fill="#00D9FF" stroke="#0099CC" stroke-width="2"/>
+                    <text x="80" y="86" text-anchor="middle" font-size="12" font-weight="bold">User</text>
+                    <text x="80" y="102" text-anchor="middle" font-size="10">Query</text>
+
+                    <!-- Arrow to Orchestrator -->
+                    <path d="M 118 90 L 195 90" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead8)"/>
+
+                    <!-- Orchestrator Node -->
+                    <circle cx="275" cy="90" r="48" fill="#9D4EDD" stroke="#7C2CB0" stroke-width="3"/>
+                    <text x="275" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Orchestrator</text>
+                    <text x="275" y="100" text-anchor="middle" font-size="11" fill="white">Agent</text>
+                    <text x="275" y="114" text-anchor="middle" font-size="9" fill="#00D9FF">Router</text>
+
+                    <!-- Arrow down to decision -->
+                    <path d="M 275 138 L 275 188" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead8)"/>
+
+                    <!-- Decision diamond — centred at 275,235 -->
+                    <polygon points="275,188 328,235 275,282 222,235" fill="#FF006E" stroke="#D50071" stroke-width="2"/>
+                    <text x="275" y="231" text-anchor="middle" font-size="11" font-weight="bold" fill="white">Route</text>
+                    <text x="275" y="246" text-anchor="middle" font-size="11" font-weight="bold" fill="white">to?</text>
+
+                    <!-- Branch lines from diamond to 3 agents at y=320 -->
+                    <!-- Left: Sales (cx=100) -->
+                    <path d="M 222 235 L 100 310" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead8)"/>
+                    <!-- Centre: Support (cx=275) -->
+                    <path d="M 275 282 L 275 310" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead8)"/>
+                    <!-- Right: HR (cx=450) -->
+                    <path d="M 328 235 L 450 310" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead8)"/>
+
+                    <!-- Sales Agent -->
+                    <rect x="48" y="310" width="104" height="76" fill="#FB5607" stroke="#D94A00" stroke-width="2" rx="8"/>
+                    <text x="100" y="336" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Sales</text>
+                    <text x="100" y="353" text-anchor="middle" font-size="11" fill="white">Agent</text>
+                    <text x="100" y="372" text-anchor="middle" font-size="9" fill="#ffe0cc">Revenue, Reports</text>
+
+                    <!-- Support Agent -->
+                    <rect x="223" y="310" width="104" height="76" fill="#FB5607" stroke="#D94A00" stroke-width="2" rx="8"/>
+                    <text x="275" y="336" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Support</text>
+                    <text x="275" y="353" text-anchor="middle" font-size="11" fill="white">Agent</text>
+                    <text x="275" y="372" text-anchor="middle" font-size="9" fill="#ffe0cc">Tickets, Issues</text>
+
+                    <!-- HR Agent -->
+                    <rect x="398" y="310" width="104" height="76" fill="#FB5607" stroke="#D94A00" stroke-width="2" rx="8"/>
+                    <text x="450" y="336" text-anchor="middle" font-size="13" font-weight="bold" fill="white">HR</text>
+                    <text x="450" y="353" text-anchor="middle" font-size="11" fill="white">Agent</text>
+                    <text x="450" y="372" text-anchor="middle" font-size="9" fill="#ffe0cc">Hiring, Benefits</text>
+
+                    <!-- Converge lines from agents down to y=430 then to Aggregate at cx=275 -->
+                    <path d="M 100 386 L 100 430" stroke="#333" stroke-width="1.5" fill="none"/>
+                    <path d="M 275 386 L 275 430" stroke="#333" stroke-width="1.5" fill="none"/>
+                    <path d="M 450 386 L 450 430" stroke="#333" stroke-width="1.5" fill="none"/>
+                    <path d="M 100 430 L 275 430" stroke="#333" stroke-width="1.5" fill="none"/>
+                    <path d="M 450 430 L 275 430" stroke="#333" stroke-width="1.5" fill="none"/>
+                    <path d="M 275 430 L 275 448" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead8)"/>
+
+                    <!-- Aggregate Results -->
+                    <rect x="210" y="448" width="130" height="52" fill="#06FFA5" stroke="#00CC7A" stroke-width="2" rx="8"/>
+                    <text x="275" y="470" text-anchor="middle" font-size="12" font-weight="bold">Aggregate</text>
+                    <text x="275" y="488" text-anchor="middle" font-size="10">Results</text>
+
+                    <!-- Arrow down to Response -->
+                    <path d="M 275 500 L 275 520" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead8)"/>
+
+                    <!-- Response to User -->
+                    <rect x="210" y="520" width="130" height="52" fill="#00D9FF" stroke="#0099CC" stroke-width="2" rx="8"/>
+                    <text x="275" y="542" text-anchor="middle" font-size="12" font-weight="bold">Response</text>
+                    <text x="275" y="560" text-anchor="middle" font-size="10">to User</text>
+
+                    <!-- Legend on Right -->
+                    <rect x="580" y="30" width="260" height="310" fill="#f9f9f9" stroke="#e5e7eb" stroke-width="1.5" rx="10"/>
+                    <text x="710" y="56" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">Key Points</text>
+                    <text x="596" y="80" font-size="11" fill="#333">✓ Orchestrator reads task</text>
+                    <text x="596" y="100" font-size="11" fill="#333">✓ Determines best-fit agent</text>
+                    <text x="596" y="120" font-size="11" fill="#333">✓ Routes task to agent(s)</text>
+                    <text x="596" y="140" font-size="11" fill="#333">✓ Collects results from all</text>
+                    <text x="596" y="160" font-size="11" fill="#333">✓ Aggregates into final reply</text>
+
+                    <line x1="596" y1="178" x2="824" y2="178" stroke="#e5e7eb" stroke-width="1"/>
+
+                    <text x="710" y="202" text-anchor="middle" font-size="12" font-weight="bold" fill="#9D4EDD">Why This Matters</text>
+                    <text x="596" y="222" font-size="10" fill="#555">Each agent specializes in one</text>
+                    <text x="596" y="238" font-size="10" fill="#555">domain — more efficient,</text>
+                    <text x="596" y="254" font-size="10" fill="#555">accurate, and easy to debug.</text>
+
+                    <!-- Node legend swatches -->
+                    <circle cx="596" cy="285" r="8" fill="#9D4EDD" stroke="#7C2CB0" stroke-width="1"/>
+                    <text x="612" y="289" font-size="10" fill="#333">Orchestrator</text>
+                    <rect x="588" y="303" width="16" height="12" fill="#FB5607" stroke="#D94A00" stroke-width="1" rx="2"/>
+                    <text x="612" y="313" font-size="10" fill="#333">Specialist Agent</text>
+                    <rect x="588" y="323" width="16" height="12" fill="#06FFA5" stroke="#00CC7A" stroke-width="1" rx="2"/>
+                    <text x="612" y="333" font-size="10" fill="#333">Aggregate / Output</text>
+                </svg>
+            </div>
+
+            <div class="content-grid">
+                <div class="concept-card">
+                    <h3>Real Example</h3>
+                    <p><strong>User Query:</strong> "What's my Q3 revenue and do I have any pending support tickets?"</p>
+                    <ol style="margin-left: 15px; line-height: 1.8;">
+                        <li>Orchestrator receives the query</li>
+                        <li>Recognizes TWO subtasks: sales question + support question</li>
+                        <li>Routes to Sales Agent → gets revenue report</li>
+                        <li>Routes to Support Agent → gets pending tickets</li>
+                        <li>Combines both results</li>
+                        <li>Sends to user: "Your Q3 revenue was $500K. You have 3 pending tickets..."</li>
+                    </ol>
+                </div>
+
+                <div class="concept-card">
+                    <h3>Key Concepts</h3>
+                    <ul class="key-terms">
+                        <li><strong>Orchestrator/Router Pattern:</strong> Central agent that routes tasks</li>
+                        <li><strong>Multi-Agent System:</strong> Multiple specialized agents working together</li>
+                        <li><strong>Shared State:</strong> Agents can pass information to each other</li>
+                        <li><strong>Supervisor Agent:</strong> Manages and coordinates agents</li>
+                        <li><strong>Task Decomposition:</strong> Breaking complex queries into subtasks</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="concept-card full-width">
+                <h3>Why Our Next Project Needs Orchestrator Agents</h3>
+                <p>The mini-project (Day 6) receives a raw retail CSV and must decide: clean first, then analyse, then visualise. Instead of one monolithic script, we build 4 specialised agents coordinated by an orchestrator.</p>
+                <ul style="margin-left: 15px; line-height: 1.8;">
+                    <li><strong>Orchestrator Agent:</strong> Receives the raw CSV, decides the processing order, routes to each agent in sequence</li>
+                    <li><strong>Clean Agent:</strong> Fixes missing values, wrong data types, removes duplicates</li>
+                    <li><strong>Analysis Agent:</strong> Generates total sales, best-sellers, regional & category breakdowns</li>
+                    <li><strong>Visualization Agent (Bonus):</strong> Turns the analysis into bar, line, and pie charts</li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>This design is modular, scalable, and much easier to debug.</strong> See the full agent specs in <button class="inline-tab-link" data-day="6">Day 6: The Project →</button></p>
+            </div>
+
+            <div class="key-insight">
+                <strong>Key Takeaway:</strong> Orchestrator agents turn messy, complex problems into organized workflows. They separate concerns (each agent handles one thing), make systems more maintainable, and are how real AI applications scale.
+            </div>
+        </section>
+
+        <!-- DAY 6: THE PROJECT -->
+        <section id="day-6" class="day-content">
+            <div class="day-header">
+                <h2>Day 6: The Project — Retail Data Pipeline</h2>
+                <p class="day-subtitle">4 Agents · Real CSV Data · End-to-End Automation</p>
+            </div>
+
+            <!-- Project overview banner -->
+            <div class="project-banner">
+                <div class="project-banner-text">
+                    <h3>What We're Building</h3>
+                    <p>A multi-agent LangGraph pipeline that takes a raw retail CSV file and automatically cleans it, analyses it, and produces a dashboard-ready summary — all coordinated by an orchestrator agent.</p>
+                </div>
+                <div class="project-banner-meta">
+                    <span class="project-badge badge-input">Input: Retail CSV</span>
+                    <span class="project-badge badge-output">Output: Insights + Charts</span>
+                    <span class="project-badge badge-tech">LangChain + LangGraph</span>
+                </div>
+            </div>
+
+            <!-- Pipeline flow diagram -->
+            <div class="diagram-section">
+                <h3>The 4-Agent Pipeline</h3>
+                <svg class="pipeline-diagram" viewBox="0 0 860 220" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="pipe-arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#6B7280"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Raw CSV input -->
+                    <rect x="10" y="75" width="110" height="70" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="2" rx="10" stroke-dasharray="6,3"/>
+                    <text x="65" y="103" text-anchor="middle" font-size="11" font-weight="bold" fill="#374151">Raw Retail</text>
+                    <text x="65" y="120" text-anchor="middle" font-size="11" fill="#374151">CSV File</text>
+                    <text x="65" y="136" text-anchor="middle" font-size="10" fill="#9CA3AF">messy data</text>
+
+                    <!-- Arrow CSV → Orchestrator -->
+                    <path d="M 120 110 L 165 110" stroke="#6B7280" stroke-width="2" fill="none" marker-end="url(#pipe-arrow)"/>
+
+                    <!-- 1. Orchestrator -->
+                    <rect x="165" y="60" width="140" height="100" fill="#9D4EDD" stroke="#7C2CB0" stroke-width="2.5" rx="12"/>
+                    <text x="235" y="88" text-anchor="middle" font-size="10" fill="#e0c8ff" font-weight="600">① ORCHESTRATOR</text>
+                    <text x="235" y="108" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Manager</text>
+                    <text x="235" y="126" text-anchor="middle" font-size="10" fill="#e0c8ff">Reads CSV, decides</text>
+                    <text x="235" y="141" text-anchor="middle" font-size="10" fill="#e0c8ff">processing order</text>
+
+                    <!-- Arrow Orchestrator → Clean -->
+                    <path d="M 305 110 L 350 110" stroke="#6B7280" stroke-width="2" fill="none" marker-end="url(#pipe-arrow)"/>
+
+                    <!-- 2. Clean Agent -->
+                    <rect x="350" y="60" width="130" height="100" fill="#FB5607" stroke="#D94A00" stroke-width="2" rx="12"/>
+                    <text x="415" y="88" text-anchor="middle" font-size="10" fill="#ffe0cc" font-weight="600">② CLEAN AGENT</text>
+                    <text x="415" y="108" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Cleaner</text>
+                    <text x="415" y="126" text-anchor="middle" font-size="10" fill="#ffe0cc">Fix types, nulls,</text>
+                    <text x="415" y="141" text-anchor="middle" font-size="10" fill="#ffe0cc">remove dupes</text>
+
+                    <!-- Arrow Clean → Analysis -->
+                    <path d="M 480 110 L 525 110" stroke="#6B7280" stroke-width="2" fill="none" marker-end="url(#pipe-arrow)"/>
+
+                    <!-- 3. Analysis Agent -->
+                    <rect x="525" y="60" width="130" height="100" fill="#FF006E" stroke="#D50071" stroke-width="2" rx="12"/>
+                    <text x="590" y="88" text-anchor="middle" font-size="10" fill="#ffc0dc" font-weight="600">③ ANALYSIS AGENT</text>
+                    <text x="590" y="108" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Analyst</text>
+                    <text x="590" y="126" text-anchor="middle" font-size="10" fill="#ffc0dc">Sales, products,</text>
+                    <text x="590" y="141" text-anchor="middle" font-size="10" fill="#ffc0dc">regions, stats</text>
+
+                    <!-- Arrow Analysis → Viz -->
+                    <path d="M 655 110 L 700 110" stroke="#6B7280" stroke-width="2" fill="none" marker-end="url(#pipe-arrow)"/>
+
+                    <!-- 4. Visualization Agent (bonus) -->
+                    <rect x="700" y="60" width="145" height="100" fill="#06FFA5" stroke="#00CC7A" stroke-width="2" rx="12"/>
+                    <text x="772" y="88" text-anchor="middle" font-size="10" fill="#003322" font-weight="600">④ VIZ AGENT ★ BONUS</text>
+                    <text x="772" y="108" text-anchor="middle" font-size="13" font-weight="bold" fill="#003322">Visualizer</text>
+                    <text x="772" y="126" text-anchor="middle" font-size="10" fill="#004433">Bar, line &amp;</text>
+                    <text x="772" y="141" text-anchor="middle" font-size="10" fill="#004433">pie charts</text>
+
+                    <!-- Step labels below -->
+                    <text x="65" y="185" text-anchor="middle" font-size="9" fill="#9CA3AF">Input</text>
+                    <text x="235" y="185" text-anchor="middle" font-size="9" fill="#7C2CB0">Routes &amp; coordinates</text>
+                    <text x="415" y="185" text-anchor="middle" font-size="9" fill="#D94A00">Required — Step 1</text>
+                    <text x="590" y="185" text-anchor="middle" font-size="9" fill="#D50071">Required — Step 2</text>
+                    <text x="772" y="185" text-anchor="middle" font-size="9" fill="#00CC7A">Bonus — Step 3</text>
+                </svg>
+            </div>
+
+            <!-- 4 Agent Detail Cards -->
+            <h3 style="margin: 2.5rem 0 1.25rem; font-size: 1.35rem; color: var(--text-primary);">Agent Specifications</h3>
+
+            <!-- Agent 1: Orchestrator -->
+            <div class="agent-card agent-orchestrator">
+                <div class="agent-card-header">
+                    <span class="agent-number">01</span>
+                    <div>
+                        <h3>Orchestrator Agent</h3>
+                        <span class="agent-role-badge">Manager · Router · Coordinator</span>
+                    </div>
+                </div>
+                <div class="agent-card-body">
+                    <div class="agent-description">
+                        <p>The orchestrator is the entry point. It receives the raw retail CSV, inspects it, and decides the correct processing sequence — always cleaning before analysing. It coordinates all other agents and collects their outputs into a final report.</p>
+                        <p>Think of it as the <strong>project manager</strong>: it never does the actual work itself, it just makes sure the right agent handles each job in the right order.</p>
+                    </div>
+                    <div class="agent-responsibilities">
+                        <h4>Responsibilities</h4>
+                        <ul class="key-terms">
+                            <li><strong>Receive:</strong> Raw retail CSV as input</li>
+                            <li><strong>Inspect:</strong> Understand what the data contains</li>
+                            <li><strong>Decide:</strong> Set processing order (Clean → Analyse → Visualise)</li>
+                            <li><strong>Route:</strong> Pass data to the correct agent at each step</li>
+                            <li><strong>Collect:</strong> Gather outputs from all agents</li>
+                            <li><strong>Return:</strong> Final aggregated result to the user</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="example-box">
+                    <strong>Orchestrator Logic (pseudo-code):</strong>
+                    <pre>def orchestrator(csv_path):
+    state = {"raw_data": load_csv(csv_path)}
+
+    # Always clean first
+    state = clean_agent.run(state)
+
+    # Then analyse the clean data
+    state = analysis_agent.run(state)
+
+    # Bonus: visualise if requested
+    if state.get("visualize"):
+        state = viz_agent.run(state)
+
+    return state["final_report"]</pre>
+                </div>
+            </div>
+
+            <!-- Agent 2: Clean -->
+            <div class="agent-card agent-clean">
+                <div class="agent-card-header">
+                    <span class="agent-number">02</span>
+                    <div>
+                        <h3>Clean Agent</h3>
+                        <span class="agent-role-badge">Data Cleaner · Validator · Transformer</span>
+                    </div>
+                </div>
+                <div class="agent-card-body">
+                    <div class="agent-description">
+                        <p>Raw retail data is almost always messy — missing prices, wrong date formats, duplicate transactions, invalid category names. The Clean Agent handles all of this before any analysis happens. Garbage in, garbage out — this agent prevents that.</p>
+                        <p>It receives the raw DataFrame from the orchestrator and outputs a <strong>cleaned, validated dataset</strong> ready for analysis.</p>
+                    </div>
+                    <div class="agent-responsibilities">
+                        <h4>Responsibilities</h4>
+                        <ul class="key-terms">
+                            <li><strong>Missing Values:</strong> Fill or drop null entries in key columns</li>
+                            <li><strong>Data Types:</strong> Convert dates, prices, quantities to correct types</li>
+                            <li><strong>Duplicates:</strong> Remove identical or near-duplicate rows</li>
+                            <li><strong>Broken Rows:</strong> Drop rows with invalid/impossible values</li>
+                            <li><strong>Standardise:</strong> Normalise category names and region labels</li>
+                            <li><strong>Output:</strong> Return a clean DataFrame to the orchestrator</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="example-box">
+                    <strong>What the Clean Agent fixes:</strong>
+                    <pre># Before cleaning (raw CSV issues):
+# - "price" column has "$" symbols → not numeric
+# - "date" is stored as "01/15/2024" string
+# - 3% of rows have NaN in "quantity"
+# - 12 duplicate transaction rows
+# - "Electronics", "electronics", "ELECTRONICS" → inconsistent
+
+# After Clean Agent:
+# - price: float64  ✓
+# - date: datetime64  ✓
+# - quantity NaNs: filled with median  ✓
+# - duplicates: removed  ✓
+# - categories: lowercase, standardised  ✓</pre>
+                </div>
+            </div>
+
+            <!-- Agent 3: Analysis -->
+            <div class="agent-card agent-analysis">
+                <div class="agent-card-header">
+                    <span class="agent-number">03</span>
+                    <div>
+                        <h3>Analysis (EDA) Agent</h3>
+                        <span class="agent-role-badge">Data Analyst · Insight Generator · Summariser</span>
+                    </div>
+                </div>
+                <div class="agent-card-body">
+                    <div class="agent-description">
+                        <p>Once the data is clean, the Analysis Agent runs Exploratory Data Analysis (EDA) — it digs into the numbers and extracts the key business insights. It doesn't just compute statistics; it produces a structured, readable summary.</p>
+                        <p>The output is a <strong>structured insights object</strong> (dictionary/JSON) that can feed a dashboard or be displayed directly to the user.</p>
+                    </div>
+                    <div class="agent-responsibilities">
+                        <h4>Insights Generated</h4>
+                        <ul class="key-terms">
+                            <li><strong>Total Sales:</strong> Sum of revenue across all transactions</li>
+                            <li><strong>Best-Selling Products:</strong> Top N products by quantity and revenue</li>
+                            <li><strong>Sales by Region:</strong> Breakdown of revenue per geographic region</li>
+                            <li><strong>Sales by Category:</strong> Revenue split across product categories</li>
+                            <li><strong>Time Trends:</strong> Monthly or weekly sales trends</li>
+                            <li><strong>Summary Stats:</strong> Avg order value, total transactions, peak period</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="example-box">
+                    <strong>Analysis Agent output (structured):</strong>
+                    <pre>{
+  "total_revenue": 847293.50,
+  "total_transactions": 12841,
+  "avg_order_value": 65.98,
+  "top_products": [
+    {"name": "Wireless Headphones", "revenue": 92400},
+    {"name": "Laptop Stand",        "revenue": 78200}
+  ],
+  "sales_by_region": {
+    "North": 312000, "South": 198000,
+    "East":  201000, "West":  136293
+  },
+  "sales_by_category": {
+    "Electronics": 420000,
+    "Accessories":  230000,
+    "Stationery":   197293
+  },
+  "peak_month": "November 2024"
+}</pre>
+                </div>
+            </div>
+
+            <!-- Agent 4: Visualization (Bonus) -->
+            <div class="agent-card agent-viz">
+                <div class="agent-card-header">
+                    <span class="agent-number bonus-number">04</span>
+                    <div>
+                        <h3>Visualization Agent <span class="bonus-tag">Bonus</span></h3>
+                        <span class="agent-role-badge">Chart Builder · Dashboard Generator</span>
+                    </div>
+                </div>
+                <div class="agent-card-body">
+                    <div class="agent-description">
+                        <p>After the Analysis Agent produces structured insights, the Visualization Agent turns that data into charts. It only runs once the first three agents are working reliably — treat it as a stretch goal.</p>
+                        <p>It reads the analysis output and generates <strong>bar charts, line graphs, and pie charts</strong> using a library like Matplotlib or Plotly, saving them as image files or rendering them inline.</p>
+                    </div>
+                    <div class="agent-responsibilities">
+                        <h4>Charts to Generate</h4>
+                        <ul class="key-terms">
+                            <li><strong>Bar Chart:</strong> Top products by revenue</li>
+                            <li><strong>Pie Chart:</strong> Sales split by category</li>
+                            <li><strong>Bar Chart:</strong> Revenue by region</li>
+                            <li><strong>Line Chart:</strong> Monthly sales trend over time</li>
+                            <li><strong>Output:</strong> Save as PNG files or display in notebook</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="example-box">
+                    <strong>Visualization Agent (pseudo-code):</strong>
+                    <pre>def viz_agent(state):
+    insights = state["insights"]
+
+    # Bar chart: top products
+    plot_bar(insights["top_products"], title="Top Products by Revenue")
+
+    # Pie chart: sales by category
+    plot_pie(insights["sales_by_category"], title="Revenue by Category")
+
+    # Line chart: monthly trend
+    plot_line(insights["monthly_trend"], title="Sales Over Time")
+
+    state["charts_saved"] = True
+    return state</pre>
+                </div>
+            </div>
+
+            <!-- Build order advice -->
+            <div class="diagram-section" style="margin-top: 2rem;">
+                <h3>Recommended Build Order</h3>
+                <div class="build-order-grid">
+                    <div class="build-step">
+                        <span class="build-step-num">1</span>
+                        <div>
+                            <strong>Clean Agent first</strong>
+                            <p>Test it standalone with a sample CSV. Verify output is clean before touching anything else.</p>
+                        </div>
+                    </div>
+                    <div class="build-step">
+                        <span class="build-step-num">2</span>
+                        <div>
+                            <strong>Analysis Agent second</strong>
+                            <p>Feed it the clean output from step 1. Check all insight fields are correct.</p>
+                        </div>
+                    </div>
+                    <div class="build-step">
+                        <span class="build-step-num">3</span>
+                        <div>
+                            <strong>Orchestrator Agent third</strong>
+                            <p>Wire agents 1 and 2 together. Test the full pipeline end-to-end with the raw CSV.</p>
+                        </div>
+                    </div>
+                    <div class="build-step build-step-bonus">
+                        <span class="build-step-num bonus-step-num">4</span>
+                        <div>
+                            <strong>Visualization Agent last (bonus)</strong>
+                            <p>Only add this once the first 3 agents work reliably end-to-end.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <strong>Key Takeaway:</strong> Build and test each agent in isolation before connecting them. The orchestrator is the last piece to wire up, not the first. This way, if something breaks, you know exactly which agent is responsible.
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Resource Links Section -->
+    <section class="resources-section">
+        <h2>Free Resources to Dive Deeper</h2>
+        <div class="resources-grid">
+            <a href="https://python.langchain.com/docs/introduction/" target="_blank" class="resource-card">
+                <h4>LangChain Docs</h4>
+                <p>Official documentation with API reference and guides</p>
+            </a>
+            <a href="https://academy.langchain.com" target="_blank" class="resource-card">
+                <h4>LangChain Academy</h4>
+                <p>Free official courses on LangChain fundamentals</p>
+            </a>
+            <a href="https://langchain-ai.github.io/langgraph/" target="_blank" class="resource-card">
+                <h4>LangGraph Docs</h4>
+                <p>Guide to building graphs and agents</p>
+            </a>
+            <a href="https://langchain-ai.github.io/langgraph/tutorials/multi_agent/multi-agent-collaboration/" target="_blank" class="resource-card">
+                <h4>Multi-Agent Tutorial</h4>
+                <p>Real example of orchestrator agents in action</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>💭 Learning Week: LangChain + LangGraph Fundamentals</p>
+        <p>DevSynt AI Automation Internship · Mentor: Afnan Shoukat</p>
+        <p style="margin-top: 10px; font-size: 12px; color: #999;">Quiz coming next — make sure you understand these concepts!</p>
+    </footer>
+
+    <!-- JavaScript for interactivity -->
+    <script>
+        // Tab switching functionality
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const dayContents = document.querySelectorAll('.day-content');
+
+        function switchToDay(dayNumber) {
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            dayContents.forEach(content => content.classList.remove('active'));
+            const targetBtn = document.querySelector(`.tab-btn[data-day="${dayNumber}"]`);
+            const targetContent = document.getElementById(`day-${dayNumber}`);
+            if (targetBtn) targetBtn.classList.add('active');
+            if (targetContent) targetContent.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                switchToDay(button.getAttribute('data-day'));
+            });
+        });
+
+        // Inline tab link buttons (e.g. "Day 6: The Project →")
+        document.querySelectorAll('.inline-tab-link').forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchToDay(btn.getAttribute('data-day'));
+            });
+        });
+
+        // Add animation to cards on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'slideUp 0.6s ease-out';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.concept-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
